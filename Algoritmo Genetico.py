@@ -11,7 +11,7 @@ class Algoritimo_genetico:
     def gerar_ind(self):
         individuo = []
         for i in range(len(self.atributo)):
-            individuo.append = randint(1,self.atributo[i])
+            individuo.append(randint(1,self.atributo[i]))
         return individuo
     
     def gerar_pop(self):
@@ -19,11 +19,15 @@ class Algoritimo_genetico:
         for i in range(self.num_ind):
             populacao.append(self.gerar_ind())
         return populacao
+    
     def fitness(self, individuo):
         soma = 0
+        maior = 0
         for i in range(len(self.atributo)):
             soma += individuo[i]
-        return soma
+            maior += self.atributo[i]
+        return soma/maior
+    
     def selecao(self, populacao):
         selecaoH = [choice(populacao), choice(populacao)]
         selecaoM = [choice(populacao), choice(populacao)]
@@ -41,8 +45,52 @@ class Algoritimo_genetico:
             mae = selecaoM[1]
 
         return pai, mae
+    
+    def crossover(self, selecao):
+        sorteio = randint(0,3)
+        filho1 = []
+        filho2 = []
+        if sorteio != 0:
+            for i in range(sorteio + 1):
+                filho1.append(selecao[0][i])
+                filho2.append(selecao[1][i])
+        else:
+            filho1.append(selecao[0][0])
+            filho2.append(selecao[1][0])
 
+        if sorteio != 3:
+            for i in range(sorteio + 1 ,len(selecao[0])):
+                filho1.append(selecao[0][i])
+                filho2.append(selecao[1][i])
+        else:
+            filho2.append(selecao[0][4])
+            filho1.append(selecao[1][4])
 
+        return list(filho1), list(filho2)
 
-        
-ag = Algoritimo_genetico(10, 10, 10)
+    def geracao(self, populacao):
+        nova_populacao = []
+        for i in range(len(self.gerar_pop())):
+            pai, mae = self.selecao(populacao)
+            filho1, filho2 = self.crossover((pai, mae))
+            nova_populacao.append(filho1)
+            nova_populacao.append(filho2)
+        return nova_populacao
+
+    def mutacao(self, nova_populacao):
+        chance = 0
+        a = list(nova_populacao)
+        populacao_mutada = []
+        for i in range(len(nova_populacao)):
+            for j in range(len(self.atributo)):
+                chance = randint(1,100)
+                if chance <= self.chance_m:
+                    nova_populacao[i][j] = randint(1, self.atributo[j])
+            populacao_mutada.append(nova_populacao[i])
+        return populacao_mutada
+
+    def finalizar(self):
+        pop = self.gerar_pop()
+        nova_pop = self.geracao(pop)
+        pop_mutada = self.mutacao(nova_pop)
+        return pop_mutada
