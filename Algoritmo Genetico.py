@@ -97,7 +97,10 @@ class Algoritimo_genetico:
             soma += self.fitness(populacao[i])
         return soma/self.num_ind
     def finalizar(self):
+
+
         #geracao1
+        algoritimo = ""
         geracao = 1
         geracao_melhor_ind = 1
         geracao_melhor = 1
@@ -106,31 +109,25 @@ class Algoritimo_genetico:
         pop_mutada = self.mutar(nova_pop)
         fitness_pop = self.fitness_populacao(pop_mutada)
 
-
         for j in range(10):
-            print(pop_mutada[j])
+            algoritimo += str(pop_mutada[j]) + '\n'
         self.melhor_ind = pop_mutada[0]
         for i in range(self.num_ind):
             if self.fitness(self.melhor_ind) < self.fitness(pop_mutada[i]):
                 self.melhor_ind = pop_mutada[i]
 
 
-        print("melhor geracao: " + str(geracao_melhor))
-        print(fitness_pop)
-        print("melhor ind: ")
-        print(self.melhor_ind)
-        print("geracao: " + str(geracao_melhor_ind))
-        print(self.fitness(self.melhor_ind))
+        algoritimo += "\nmelhor geracao: " + str(geracao_melhor) + '\n' + str(fitness_pop) + '\n' + "melhor ind: " + '\n' + str(self.melhor_ind) + '\n' +  "geracao: " + str(geracao_melhor_ind) + '\n' + str(self.fitness(self.melhor_ind)) + 2*'\n'
+
 
         geracao += 1
-        print("\n")
         #geracao_seguinte
         for i in range(self.num_gen - 1):
             pop = list(pop_mutada)
             nova_pop = self.gerar_nova(pop)
             pop_mutada = self.mutar(nova_pop)
             for k in range(10):
-                print(pop_mutada[k])
+                algoritimo += str(pop_mutada[k]) + '\n'
             if fitness_pop < self.fitness_populacao(pop_mutada):
                 fitness_pop = self.fitness_populacao(pop_mutada)
                 geracao_melhor = geracao
@@ -139,16 +136,12 @@ class Algoritimo_genetico:
                 if self.fitness(self.melhor_ind) < self.fitness(pop_mutada[i]):
                     self.melhor_ind = pop_mutada[i]
                     geracao_melhor_ind = geracao
-
-            print("melhor geracao: " + str(geracao_melhor))
-            print(fitness_pop)
-            print("melhor ind: ")
-            print(self.melhor_ind)
-            print("geracao: " + str(geracao_melhor_ind))
-            print(self.fitness(self.melhor_ind))
+            algoritimo += "\nfit atual: " + str(self.fitness_populacao(pop_mutada))
+            algoritimo += "\nmelhor geracao: " + str(geracao_melhor) + '\n' + str(fitness_pop) + '\n' + "melhor ind: " + '\n' + str(self.melhor_ind) + '\n' +  "geracao: " + str(geracao_melhor_ind) + '\n' + str(self.fitness(self.melhor_ind)) + 2*'\n'
 
             geracao += 1
-            print("\n")
+
+        return algoritimo
 
 
 
@@ -158,5 +151,6 @@ class Algoritimo_genetico:
 
 if __name__ == '__main__':
         
-    ag = Algoritimo_genetico(10, 10, 10)
-    ag.finalizar()
+    ag = Algoritimo_genetico(10, 100, 10)
+    with open("evolucao.txt","w") as file:
+        file.write(ag.finalizar())
