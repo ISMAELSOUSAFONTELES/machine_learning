@@ -89,11 +89,24 @@ class Algoritimo_genetico:
             populacao_mutada.append(nova_populacao[i])
         return populacao_mutada
 
+
+
+    def fitness_populacao(self, populacao):
+        soma = 0
+        for i in range(self.num_ind):
+            soma += self.fitness(populacao[i])
+        return soma/self.num_ind
     def finalizar(self):
         #geracao1
+        geracao = 1
+        geracao_melhor_ind = 1
+        geracao_melhor = 1
         pop = self.gerar_pop()
         nova_pop = self.gerar_nova(pop)
         pop_mutada = self.mutar(nova_pop)
+        fitness_pop = self.fitness_populacao(pop_mutada)
+
+
         for j in range(10):
             print(pop_mutada[j])
         self.melhor_ind = pop_mutada[0]
@@ -101,6 +114,15 @@ class Algoritimo_genetico:
             if self.fitness(self.melhor_ind) < self.fitness(pop_mutada[i]):
                 self.melhor_ind = pop_mutada[i]
 
+
+        print("melhor geracao: " + str(geracao_melhor))
+        print(fitness_pop)
+        print("melhor ind: ")
+        print(self.melhor_ind)
+        print("geracao: " + str(geracao_melhor_ind))
+        print(self.fitness(self.melhor_ind))
+
+        geracao += 1
         print("\n")
         #geracao_seguinte
         for i in range(self.num_gen - 1):
@@ -109,12 +131,23 @@ class Algoritimo_genetico:
             pop_mutada = self.mutar(nova_pop)
             for k in range(10):
                 print(pop_mutada[k])
-                
+            if fitness_pop < self.fitness_populacao(pop_mutada):
+                fitness_pop = self.fitness_populacao(pop_mutada)
+                geracao_melhor = geracao
+
             for i in range(self.num_ind):
                 if self.fitness(self.melhor_ind) < self.fitness(pop_mutada[i]):
                     self.melhor_ind = pop_mutada[i]
+                    geracao_melhor_ind = geracao
+
+            print("melhor geracao: " + str(geracao_melhor))
+            print(fitness_pop)
             print("melhor ind: ")
             print(self.melhor_ind)
+            print("geracao: " + str(geracao_melhor_ind))
+            print(self.fitness(self.melhor_ind))
+
+            geracao += 1
             print("\n")
 
 
