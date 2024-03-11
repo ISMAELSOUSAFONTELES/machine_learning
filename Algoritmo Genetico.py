@@ -68,16 +68,16 @@ class Algoritimo_genetico:
 
         return list(filho1), list(filho2)
 
-    def geracao(self, populacao):
+    def gerar_nova(self, populacao):
         nova_populacao = []
-        for i in range(len(self.gerar_pop())):
+        for i in range(5):
             pai, mae = self.selecao(populacao)
             filho1, filho2 = self.crossover((pai, mae))
             nova_populacao.append(filho1)
             nova_populacao.append(filho2)
         return nova_populacao
 
-    def mutacao(self, nova_populacao):
+    def mutar(self, nova_populacao):
         chance = 0
         a = list(nova_populacao)
         populacao_mutada = []
@@ -90,7 +90,41 @@ class Algoritimo_genetico:
         return populacao_mutada
 
     def finalizar(self):
+        #geracao1
         pop = self.gerar_pop()
-        nova_pop = self.geracao(pop)
-        pop_mutada = self.mutacao(nova_pop)
-        return pop_mutada
+        nova_pop = self.gerar_nova(pop)
+        pop_mutada = self.mutar(nova_pop)
+        for j in range(10):
+            print(pop_mutada[j])
+        self.melhor_ind = pop_mutada[0]
+        for i in range(self.num_ind):
+            if self.fitness(self.melhor_ind) < self.fitness(pop_mutada[i]):
+                self.melhor_ind = pop_mutada[i]
+
+        print("\n")
+        #geracao_seguinte
+        for i in range(self.num_gen - 1):
+            pop = list(pop_mutada)
+            nova_pop = self.gerar_nova(pop)
+            pop_mutada = self.mutar(nova_pop)
+            for k in range(10):
+                print(pop_mutada[k])
+
+            self.melhor_ind = pop_mutada[0]
+            for i in range(self.num_ind):
+                if self.fitness(self.melhor_ind) < self.fitness(pop_mutada[i]):
+                    self.melhor_ind = pop_mutada[i]
+            print("melhor ind: ")
+            print(self.melhor_ind)
+            print("\n")
+
+
+
+
+
+
+
+if __name__ == '__main__':
+        
+    ag = Algoritimo_genetico(10, 10, 10)
+    ag.finalizar()
