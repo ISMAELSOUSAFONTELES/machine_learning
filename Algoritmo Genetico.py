@@ -109,8 +109,7 @@ class Algoritimo_genetico:
             pop_mutada = self.mutar(nova_pop)
             for k in range(10):
                 print(pop_mutada[k])
-
-            self.melhor_ind = pop_mutada[0]
+                
             for i in range(self.num_ind):
                 if self.fitness(self.melhor_ind) < self.fitness(pop_mutada[i]):
                     self.melhor_ind = pop_mutada[i]
