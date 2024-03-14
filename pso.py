@@ -2,6 +2,8 @@ from random import randint, choice, uniform
 
 
 
+def distancia(posf, posi):
+    pass
 
 
 class Particula:
@@ -25,15 +27,21 @@ class PSO:
         return zero
 
     def gerar_pos_rand(self):
-        pass
+        pos = [choice(0,25), choice(0,25), choice(0,25)]
+        return pos
 
     def gerar_part(self):
         pos = self.gerar_pos_rand()
-        vel = pos - self.gerar_pos_zero()
+        
         c1 = uniform(0,2)
         c1 = uniform(0,2)
+        particula = Particula()
+    
+    def performace(self, part):
+        return sum(part)/75
     
     def gerar_enxame(self):
         enxame = []
         for i in range(self.tam_enxame):
             p = self.gerar_part()
+            p.perfor
