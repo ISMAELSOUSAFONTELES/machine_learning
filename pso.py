@@ -1,4 +1,4 @@
-from random import randint, choice
+from random import randint, choice, uniform
 
 
 
@@ -22,22 +22,18 @@ class PSO:
     def gerar_pos_zero(self):
         zero = [12,12,12]
 
-        return 0
+        return zero
 
     def gerar_pos_rand(self):
         pass
 
     def gerar_part(self):
-        zero = self.gerar_pos_zero()
-        
-
+        pos = self.gerar_pos_rand()
         vel = pos - self.gerar_pos_zero()
-        c1 = randint(0,2)
-        c1 = randint(0,2)
+        c1 = uniform(0,2)
+        c1 = uniform(0,2)
     
     def gerar_enxame(self):
         enxame = []
         for i in range(self.tam_enxame):
             p = self.gerar_part()
-
-
