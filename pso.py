@@ -1,6 +1,5 @@
-from random import randint, choice, uniform
+from random import uniform
 import numpy as np
-from icecream import ic
 
 
 class Particula:
@@ -14,12 +13,12 @@ class Particula:
         self.c2 = float(c2)
 
     def prox_velocidade(self, melhor_pos_g):
-        w = uniform(0,2)
+        w = uniform(0,1)
         inercia = w*self.vel
         c1 = self.c1
         c2 = self.c2
-        r1 = uniform(0,2)
-        r2 = uniform(0,2)
+        r1 = uniform(0,1)
+        r2 = uniform(0,1)
         c_comp = c1*r1*(self.melhor_pos - self.pos)
         s_comp = c2*r2*(melhor_pos_g - self.pos)
         prox_vel = inercia + c_comp + s_comp
@@ -32,6 +31,7 @@ class PSO:
         self.tam_enxame = tam_enxame
         self.num_interacao = int(num_interacao)
         self.melhor_pos_geral = np.array([0,0,0])
+        self.melhor_per_geral = 0
     
     def gerar_pos_zero(self):
         zero = np.array([12,12,12])
@@ -47,7 +47,7 @@ class PSO:
         return pos
 
     def performace(self, pos):
-        return sum(list(pos))/75
+        return sum(pos)/75
 
     def gerar_part(self):
         zero = self.gerar_pos_zero()
@@ -56,8 +56,9 @@ class PSO:
         c1 = uniform(0,2)
         c2 = uniform(0,2)
         per = self.performace(pos)
-
         particula = Particula(pos, vel,per,c1, c2)
+        particula.melhor_pos = pos
+        particula.melhor_per = per
         return particula
     
     
@@ -68,7 +69,7 @@ class PSO:
             p = self.gerar_part()
             if self.performace(p.pos) > p.melhor_per:
                 p.melhor_per = self.performace(p.pos)
-                p.melhor_pos = p.pos
+                p.melhor_pos = np.array(list(p.pos))
             enxame.append(p)
         return enxame
     
@@ -81,28 +82,34 @@ class PSO:
     
     def executar(self):
         enxame = self.gerar_enxame()
-        arranjo = enxame
-        novo_arranjo = []
-        for i in arranjo:
-            print(i.pos)
-        print("\n\n\n\n")
-        for _ in range(self.num_interacao):
-            for p in arranjo:
-                nova_vel = p.prox_velocidade(self.melhor_pos_geral)
-                nova_pos = self.andar(p)
-                if self.performace(nova_pos) > p.melhor_per:
-                    p.melhor_pos = nova_pos
-                    p.melhor_per = self.performace(nova_pos)
-                if self.performace(nova_pos) > self.performace(self.melhor_pos_geral):
-                    self.melhor_pos_geral = nova_pos
-                novo_arranjo.append(Particula(nova_pos, nova_vel,self.performace(nova_pos),p.c1,p.c2))
-            arranjo = novo_arranjo
-            novo_arranjo = []
-            for i in arranjo:
-                print(str(i.pos) + "   " +str(i.prox_velocidade))
-            print("\n\n\n\n")
         
+        for p in enxame:
+            print(p.pos)
+            if p.per > p.melhor_per:
+                p.melhor_per = p.per
+                p.melhor_pos = np.array(list(p.pos))
+            if p.melhor_per > self.melhor_per_geral:
+                self.melhor_pos_geral = np.array(list(p.melhor_pos))
+                self.melhor_per_geral = p.melhor_per
+        print("\n\n")
+        
+        for _ in range(self.num_interacao):
+            for p in (enxame):
+                p.pos = self.andar(p)
+                if p.melhor_per > self.melhor_per_geral:
+                    self.melhor_pos_geral = p.melhor_pos
+                    self.melhor_per_geral = p.melhor_per
+                print(p.pos)
+            print("\n\n")
+        print(self.melhor_per_geral)
+                
+
+        
+        
+if __name__ == '__main__':
+
+    pso = PSO(10,10000)
+    pso.executar()
 
 
-pso = PSO(10,10)
-pso.executar()
+
