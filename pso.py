@@ -56,10 +56,10 @@ class PSO:
         c1 = uniform(0,2)
         c2 = uniform(0,2)
         per = self.performace(pos)
-        particula = Particula(pos, vel,per,c1, c2)
-        particula.melhor_pos = pos
-        particula.melhor_per = per
-        return particula
+        p = Particula(pos, vel,per,c1, c2)
+        p.melhor_pos = pos
+        p.melhor_per = per
+        return p
     
     
     
@@ -96,6 +96,9 @@ class PSO:
         for _ in range(self.num_interacao):
             for p in (enxame):
                 p.pos = self.andar(p)
+                if p.per > p.melhor_per:
+                    p.melhor_per = p.per
+                    p.melhor_pos = np.array(list(p.pos))
                 if p.melhor_per > self.melhor_per_geral:
                     self.melhor_pos_geral = p.melhor_pos
                     self.melhor_per_geral = p.melhor_per
