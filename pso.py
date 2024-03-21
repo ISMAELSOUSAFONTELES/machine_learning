@@ -83,18 +83,22 @@ class PSO:
     def executar(self):
         enxame = self.gerar_enxame()
         
-        for p in enxame:
-            print(p.pos)
+        for i in range(self.tam_enxame):
+            p = enxame[i]
+            
             if p.per > p.melhor_per:
                 p.melhor_per = p.per
                 p.melhor_pos = np.array(list(p.pos))
             if p.melhor_per > self.melhor_per_geral:
                 self.melhor_pos_geral = np.array(list(p.melhor_pos))
                 self.melhor_per_geral = p.melhor_per
+            enxame[i] = p
+            print(enxame[i].pos)
         print("\n\n")
         
         for _ in range(self.num_interacao):
-            for p in (enxame):
+            for i in range(self.tam_enxame):
+                p = enxame[i]
                 p.pos = self.andar(p)
                 if p.per > p.melhor_per:
                     p.melhor_per = p.per
@@ -102,7 +106,9 @@ class PSO:
                 if p.melhor_per > self.melhor_per_geral:
                     self.melhor_pos_geral = p.melhor_pos
                     self.melhor_per_geral = p.melhor_per
-                print(p.pos)
+                
+                enxame[i] = p
+                print(enxame[i].pos)
             print("\n\n")
         print(self.melhor_per_geral)
                 
@@ -111,8 +117,9 @@ class PSO:
         
 if __name__ == '__main__':
 
-    pso = PSO(10,10000)
+    pso = PSO(10,10)
     pso.executar()
+
 
 
 
