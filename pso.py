@@ -1,5 +1,6 @@
 from random import uniform
 import numpy as np
+from icecream import ic
 
 
 class Particula:
@@ -13,15 +14,16 @@ class Particula:
         self.c2 = float(c2)
 
     def prox_velocidade(self, melhor_pos_g):
-        w = uniform(0,1)
-        inercia = w*self.vel
+        
         c1 = self.c1
         c2 = self.c2
-        r1 = uniform(0,1)
-        r2 = uniform(0,1)
-        c_comp = c1*r1*(self.melhor_pos - self.pos)
-        s_comp = c2*r2*(melhor_pos_g - self.pos)
+        inercia = self.vel
+        c_comp = c1*(self.melhor_pos - self.pos)
+        s_comp = c2*(melhor_pos_g - self.pos)
         prox_vel = inercia + c_comp + s_comp
+        prox_vel[1] = round(prox_vel[1])
+        prox_vel[2] = round(prox_vel[2])
+        prox_vel[0] = round(prox_vel[0])
         return prox_vel
 
 
@@ -39,15 +41,15 @@ class PSO:
         return zero
 
     def gerar_pos_rand(self):
-        a = uniform(0,25)
-        b = uniform(0,25)
-        c = uniform(0,25)
+        a = round(uniform(0,25))
+        b = round(uniform(0,25))
+        c = round(uniform(0,25))
 
         pos = np.array([a, b, c])
         return pos
 
     def performace(self, pos):
-        return sum(pos)/75
+        return sum(list(pos))/75
 
     def gerar_part(self):
         zero = self.gerar_pos_zero()
@@ -70,6 +72,9 @@ class PSO:
             if self.performace(p.pos) > p.melhor_per:
                 p.melhor_per = self.performace(p.pos)
                 p.melhor_pos = np.array(list(p.pos))
+            if p.per > self.melhor_per_geral:
+                self.melhor_pos_geral = np.array(list(p.melhor_pos))
+                self.melhor_per_geral = p.per
             enxame.append(p)
         return enxame
     
@@ -85,21 +90,22 @@ class PSO:
         
         for i in range(self.tam_enxame):
             p = enxame[i]
-            
             if p.per > p.melhor_per:
                 p.melhor_per = p.per
                 p.melhor_pos = np.array(list(p.pos))
-            if p.melhor_per > self.melhor_per_geral:
+            if p.per > self.melhor_per_geral:
                 self.melhor_pos_geral = np.array(list(p.melhor_pos))
-                self.melhor_per_geral = p.melhor_per
+                self.melhor_per_geral = p.per
             enxame[i] = p
-            print(enxame[i].pos)
+            print(str(enxame[i].pos) + " " + "vel:" + str(enxame[i].vel))
         print("\n\n")
         
         for _ in range(self.num_interacao):
             for i in range(self.tam_enxame):
                 p = enxame[i]
+                p0 = p.pos
                 p.pos = self.andar(p)
+                p.vel = p.pos - p0
                 if p.per > p.melhor_per:
                     p.melhor_per = p.per
                     p.melhor_pos = np.array(list(p.pos))
@@ -108,10 +114,9 @@ class PSO:
                     self.melhor_per_geral = p.melhor_per
                 
                 enxame[i] = p
-                print(enxame[i].pos)
+                print(str(enxame[i].pos) + " " + "vel:" + str(enxame[i].vel))
             print("\n\n")
-        print(self.melhor_per_geral)
-                
+        print(self.melhor_per_geral)      
 
         
         
@@ -119,7 +124,6 @@ if __name__ == '__main__':
 
     pso = PSO(10,10)
     pso.executar()
-
 
 
 
